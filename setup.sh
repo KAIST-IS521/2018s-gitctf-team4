@@ -37,5 +37,5 @@ HOSTPORT=$3
 
 docker build -t $SERVICE_NAME .
 
-docker run -d --name $SERVICE_NAME \
-    -p 127.0.0.1:$HOSTPORT:$CONTAINERPORT $SERVICE_NAME
+docker run --rm --name $SERVICE_NAME -d -w /home/http -p 127.0.0.1:$HOSTPORT:$CONTAINERPORT \
+	$SERVICE_NAME
