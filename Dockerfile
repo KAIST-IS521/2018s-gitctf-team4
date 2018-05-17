@@ -33,8 +33,7 @@ FROM debian:latest
 # Install your package here
 # ======================================
 RUN apt-get update
-RUN apt-get install -y make
-RUN apt-get install -y gcc
+RUN apt-get install -y make gcc
 
 RUN mkdir -p /var/ctf
 COPY flag /var/ctf/
@@ -42,6 +41,8 @@ COPY flag /var/ctf/
 # ======================================
 # Build and run your service here
 # ======================================
-COPY ./ /home/http
-RUN make -C /home/http/
-ENTRYPOINT ["/home/http/bin/httpd", "-c", "/home/http/config/httpd.conf"]
+ADD /service /http
+
+WORKDIR /http
+RUN make
+ENTRYPOINT ["/http/bin/httpd", "-c", "/http/config/httpd.conf"]
