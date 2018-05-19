@@ -12,6 +12,9 @@
 #include <sys/time.h>
 #include <time.h>
 #include <errno.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+
 
 #include "constants.h"
 #include "config.h"
@@ -246,7 +249,7 @@ int chrpos(char *string, int c) {
 
 	int i = 0;
 
-	while (&string[i] != '\0') {
+	while (string[i] != '\0') {
 		if (string[i] == c) return i;
 		i++;
 	}

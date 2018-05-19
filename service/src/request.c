@@ -8,12 +8,14 @@
 #include <string.h>
 #include <errno.h>
 #include <sys/select.h>
+#include <unistd.h>
 
 /* local header files */
 #include "constants.h"
 #include "config.h"
 #include "headers.h"
 #include "request.h"
+#include "util.h"
 
 extern config_t conf;
 
@@ -94,9 +96,9 @@ int receive_message_body(int thread_id, int sockfd, char **data, size_t length) 
 
 	uint8_t chunk[1];
 
-	fd_set select_set;
+	//fd_set select_set;
 
- 	struct timeval timeout;
+ 	//struct timeval timeout;
 
 	i = 0;
 	n = 0;

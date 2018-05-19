@@ -67,6 +67,6 @@
 	if (o_level >= DEBUG) printf(__VA_ARGS__);
 	
 
-static char *methods[7] = {"GET", "HEAD", "POST", "PUT", "DELETE", "TRACE", "CONNECT"};
+static char* methods[7] = {"GET", "HEAD", "POST", "PUT", "DELETE", "TRACE", "CONNECT"};
 
 #endif

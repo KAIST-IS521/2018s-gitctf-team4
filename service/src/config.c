@@ -30,8 +30,8 @@ void read_config(char *file_path) {
 
 	int fd;
 	int length, line_length, readed;
-	int n, i, size, count, file_size;
-	int white_space, last_comma;
+	int n, i, count, file_size;
+	//int white_space, last_comma;
 
 	length = 0;
 	line_length = 0;
@@ -39,7 +39,6 @@ void read_config(char *file_path) {
 
 	n = 0;
 	i = 0;
-	size = 0;
 	count = 0;
 	file_size = 0;
 

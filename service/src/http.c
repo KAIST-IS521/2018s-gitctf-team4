@@ -40,6 +40,7 @@
 #include "headers.h"
 #include "request.h"
 #include "response.h"
+#include "util.h"
 
 /*
  * GLOBALS
@@ -57,7 +58,7 @@ config_t conf;
 
 static const char *name = "ARiSO HTTP web server";
 static const char *version = "0.1.3";
-static const char *author = "Dani Huertas";
+//static const char *author = "Dani Huertas";
 
 void close_conn(int thread_id, int sockfd) {
 
@@ -75,7 +76,7 @@ void request_handler(int thread_id, int client_sockfd) {
 
 	char *connection;
 
-	int i, n, req_count;
+	int n, req_count;
 
 	fd_set select_set;
  
@@ -86,7 +87,6 @@ void request_handler(int thread_id, int client_sockfd) {
 
 	connection = NULL;
 
- 	i = 0;
 	n = 0;
 	req_count = 0;
 
@@ -280,13 +280,18 @@ void *run(void *arg) {
 
 }
 
+int isprint(int optopt) {
+	if(optopt >= 0x20 || optopt <= 0x7e) {
+		return 1;
+	}
+	return 0;
+}
+
 int main(int argc, char *argv[]) {
 
 	char *cvalue = NULL;
 	char *ovalue = NULL;
 
-	int aflag = 0;
-	int bflag = 0;
 	int index;
 	int c;
      
@@ -358,7 +363,8 @@ int main(int argc, char *argv[]) {
 	char date_buffer[MAX_DATE_SIZE];
 
 	int server_sockfd;
-	int sockfd, client_size;
+	int sockfd;
+	socklen_t client_size;
 
 	// Local thread id (e.g. 0, 1, 2, 3 ... N)
 	int i, tid[conf.thread_pool_size];

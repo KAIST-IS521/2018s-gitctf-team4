@@ -8,6 +8,8 @@
 #include <string.h>
 #include <errno.h>
 #include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/socket.h>
 
 /* local header files */
 #include "constants.h"
@@ -234,8 +236,6 @@ void handle_response(int thread_id, int sockfd, request_t *req, response_t *resp
 	char *connection;
 	char date_buffer[MAX_DATE_SIZE];
 
-	int i;
-
 	connection = NULL;
 
 	get_date(date_buffer, "%a, %d %b %Y %H:%M:%S %Z");
@@ -347,18 +347,16 @@ void handle_response(int thread_id, int sockfd, request_t *req, response_t *resp
 int handle_get(int thread_id, request_t *req, response_t *resp) {
 
 	char *res_path;
-	char *file_path;
 	char *file_size;
 	char *file_ext;
 	char *mime_type;
 	char *charset;
 
-	int fd, i, s, string_length;
+	int string_length;
 
 	struct stat file_info;
 
 	res_path = NULL;
-	file_path = NULL;
 	file_size = NULL;
 	file_ext = NULL;
 	mime_type = NULL;
@@ -463,18 +461,16 @@ int handle_get(int thread_id, request_t *req, response_t *resp) {
 int handle_post(int thread_id, request_t *req, response_t *resp) {
 
 	char *res_path;
-	char *file_path;
 	char *file_size;
 	char *file_ext;
 	char *mime_type;
 	char *charset;
 
-	int fd, i, s, string_length;
+	int string_length;
 
 	struct stat file_info;
 
 	res_path = NULL;
-	file_path = NULL;
 	file_size = NULL;
 	file_ext = NULL;
 	mime_type = NULL;
@@ -579,18 +575,16 @@ int handle_post(int thread_id, request_t *req, response_t *resp) {
 int handle_head(int thread_id, request_t *req, response_t *resp) {
 
 	char *res_path;
-	char *file_path;
 	char *file_size;
 	char *file_ext;
 	char *mime_type;
 	char *charset;
 
-	int fd, i, s, string_length;
+	int string_length;
 
 	struct stat file_info;
 
 	res_path = NULL;
-	file_path = NULL;
 	file_size = NULL;
 	file_ext = NULL;
 	mime_type = NULL;
