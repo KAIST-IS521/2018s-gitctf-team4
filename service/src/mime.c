@@ -23,7 +23,7 @@ int get_mime_type(char *ext, char **mime_type) {
 		if (ext[0] == '.') {
 			ext += sizeof(char);
 		}
-
+		if (ext[0] == '/') return -1;
 		for (i = 0; i < n; i++) {
 
 			if (strncmp(mime_types[i].ext, ext, strlen(ext)) == 0) {
