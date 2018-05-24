@@ -216,7 +216,7 @@ void send_response_content(int thread_id, int sockfd, response_t *resp) {
 
 	if (resp->_mask & _RESPONSE_FILE_PATH) {
 
-		send_file(sockfd, resp->file_path);
+		send_file(thread_id, sockfd, resp->file_path);
 
 	}
 

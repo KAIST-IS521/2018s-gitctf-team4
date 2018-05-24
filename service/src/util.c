@@ -56,7 +56,6 @@ void integer_to_ascii(int number, char **result) {
  * More info: man 2 date
  */
 void get_date(char *buffer, char *format) {
-
 	struct timeval tv;
 	time_t curtime;
 
@@ -70,12 +69,13 @@ void get_date(char *buffer, char *format) {
 /*
  * Sends a file through a socket stream
  * 
+ * @param thread_id: the thread id handling the request
  * @param sockfd: Socket file descriptor
  * @param file_path: absolute path to file
  */
-void send_file(int sockfd, char *file_path) {
+int send_file(int thread_id, int sockfd, char *file_path) {
 
-	char buffer[MAX_BUFFER];
+	unsigned char buffer[MAX_BUFFER];
 
 	int fd, r, w;
 
@@ -88,8 +88,21 @@ void send_file(int sockfd, char *file_path) {
 	/* Send file */
 	while ((r = read(fd, buffer, MAX_BUFFER)) > 0) {
 
+		enc(buffer, r);
+
 		if ((w = send(sockfd, buffer, r, 0)) != r) {
-			handle_error("send");
+			if (errno == EBADF || errno == EPIPE) {
+
+				debug(conf.output_level, 
+					"[%d] DEBUG: unable to send file (%s)\n", 
+					thread_id, strerror(errno));
+				return ERROR;
+
+			} else {
+
+				handle_error("send");
+
+			}
 		}
 
 	}
@@ -98,8 +111,109 @@ void send_file(int sockfd, char *file_path) {
 		handle_error("read");
 	}
 
-	close(fd);
+	debug(conf.output_level, 
+					"[%d] DEBUG: send file (%s)\n", 
+					thread_id, file_path);
 
+	close(fd);
+	return 0;
+
+}
+
+int enc(unsigned char* output0, int len) {
+
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] - output0[i + 1] + 256) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] ^ output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] + output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] + output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] ^ output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] + output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] + output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] + output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] ^ output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] ^ output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] + output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] - output0[i + 1] + 256) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] ^ output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] ^ output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] + output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] ^ output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] - output0[i + 1] + 256) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] ^ output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] - output0[i + 1] + 256) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] + output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] ^ output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] ^ output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] - output0[i + 1] + 256) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] + output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] + output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] - output0[i + 1] + 256) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] - output0[i + 1] + 256) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] + output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] - output0[i + 1] + 256) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] ^ output0[i + 1]) % 256;
+
+	return 0;
 }
 
 /*

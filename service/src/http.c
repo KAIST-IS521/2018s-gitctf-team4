@@ -27,6 +27,7 @@
 
 /* error */
 #include <errno.h>
+#include <signal.h>
 
 /* file */
 #include <unistd.h>
@@ -170,6 +171,10 @@ void request_handler(int thread_id, int client_sockfd) {
 
 	} else if (strncasecmp(connection, "close", strlen("close")) == 0) {
 
+		debug(conf.output_level, 
+			"[%d] DEBUG: Connection close\n", 
+			thread_id);
+
 		handle_response(thread_id, client_sockfd, &request, &response);
 
 	} else {
@@ -191,12 +196,12 @@ void request_handler(int thread_id, int client_sockfd) {
 				free_request(&request);
 				free_response(&response);
 
+				handle_request(thread_id, client_sockfd, &request);
+				handle_response(thread_id, client_sockfd, &request, &response);
+
 				debug(conf.output_level, 
 					"[%d] DEBUG: connection is still open\n", 
 					thread_id);
-
-				handle_request(thread_id, client_sockfd, &request);
-				handle_response(thread_id, client_sockfd, &request, &response);
 
 				req_count++;
 
@@ -234,6 +239,9 @@ void request_handler(int thread_id, int client_sockfd) {
 	}
 
 	close_conn(thread_id, client_sockfd);
+	debug(conf.output_level, 
+			"[%d] DEBUG: connection close\n",
+			thread_id);
 
 	FD_CLR(client_sockfd, &select_set);
 	FD_ZERO(&select_set);
@@ -296,6 +304,7 @@ int main(int argc, char *argv[]) {
 	int c;
      
 	opterr = 0;
+	signal(SIGPIPE, SIG_IGN);
 
 	while ((c = getopt (argc, argv, "c:o:")) != -1) {
 
@@ -376,6 +385,8 @@ int main(int argc, char *argv[]) {
 	client_sockfd = malloc(conf.thread_pool_size*sizeof(int));
 	
 	server_sockfd = socket(PF_INET, SOCK_STREAM, 0);
+	if (server_sockfd < 0)
+		handle_error("socket");
 
 	// Initialize addr structs
 	memset(&server_addr, 0, sizeof(server_addr));
@@ -386,7 +397,8 @@ int main(int argc, char *argv[]) {
 
 	server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
 
-	bind(server_sockfd, (struct sockaddr *) &server_addr, sizeof(server_addr));
+	if (bind(server_sockfd, (struct sockaddr *) &server_addr, sizeof(server_addr)) < 0)
+		handle_error("bind");
 
 	listen(server_sockfd, MAX_LISTEN);
 
