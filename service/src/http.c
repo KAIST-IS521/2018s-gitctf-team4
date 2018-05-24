@@ -171,6 +171,10 @@ void request_handler(int thread_id, int client_sockfd) {
 
 	} else if (strncasecmp(connection, "close", strlen("close")) == 0) {
 
+		debug(conf.output_level, 
+			"[%d] DEBUG: Connection close\n", 
+			thread_id);
+
 		handle_response(thread_id, client_sockfd, &request, &response);
 
 	} else {
@@ -192,12 +196,12 @@ void request_handler(int thread_id, int client_sockfd) {
 				free_request(&request);
 				free_response(&response);
 
+				handle_request(thread_id, client_sockfd, &request);
+				handle_response(thread_id, client_sockfd, &request, &response);
+
 				debug(conf.output_level, 
 					"[%d] DEBUG: connection is still open\n", 
 					thread_id);
-
-				handle_request(thread_id, client_sockfd, &request);
-				handle_response(thread_id, client_sockfd, &request, &response);
 
 				req_count++;
 
@@ -229,12 +233,15 @@ void request_handler(int thread_id, int client_sockfd) {
 	} else if (n == 0) {
 
 		debug(conf.output_level, 
-			"[%d] DEBUG: connection timed out2\n",
+			"[%d] DEBUG: connection timed out\n",
 			thread_id);
 
 	}
 
 	close_conn(thread_id, client_sockfd);
+	debug(conf.output_level, 
+			"[%d] DEBUG: connection close\n",
+			thread_id);
 
 	FD_CLR(client_sockfd, &select_set);
 	FD_ZERO(&select_set);
