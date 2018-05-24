@@ -1,15 +1,30 @@
 # 2018s-gitctf-team4
 
-http
-====
 
-A custom, multi-threaded http web server.
+### Overview
 
-Warning! This project is for fun and learning purposes only.
+Welcome, IS521 students!
 
-## Compile
-* Under http folder do: `gcc -o bin/httpd ./src/*.c` (you may need to add `-lpthread` or `-pthread`).
+Our service is an HTTP web server.
 
-## Execute
-* Setup the `httpd.conf` config file.
-* Under http folder do `./bin/httpd -c ./config/httpd.conf`.
+To test our service, first run docker.
+```
+git clone <repository>
+cd <repository>
+./setup.sh team4 4000 4000
+```
+
+Then open your browser to navigate to our web server:
+```
+http://localhost:4000
+```
+
+You will see a warm greeting message.
+
+Or, you can use the fancy ```gitctf-script```:
+```
+./gitctf.py exec service --service-dir <repository> --service-name test --host-port 4000 --service-port 4000
+```
+
+**Alright then,**
+#### Happy Hacking!!
