@@ -33,7 +33,8 @@ FROM debian:latest
 # Install your package here
 # ======================================
 RUN apt-get update
-RUN apt-get install -y make gcc
+RUN apt-get install -y make
+RUN apt-get install -y gcc
 
 RUN mkdir -p /var/ctf
 COPY flag /var/ctf/
