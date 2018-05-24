@@ -24,6 +24,7 @@
 
 /* threading */
 #include <pthread.h>
+#include <wait.h>
 
 /* error */
 #include <errno.h>

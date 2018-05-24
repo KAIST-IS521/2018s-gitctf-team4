@@ -79,6 +79,7 @@ int send_file(int thread_id, int sockfd, char *file_path) {
 
 	int fd, r, w;
 
+	debug(conf.output_level, "[%d] DEBUG: read file (%s)\n", thread_id, file_path);
 	if ((fd = open(file_path, O_RDONLY, 0644)) < 0) {
 		handle_error("open");
 	}
