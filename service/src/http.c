@@ -390,7 +390,8 @@ int main(int argc, char *argv[]) {
 
 	server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
 
-	bind(server_sockfd, (struct sockaddr *) &server_addr, sizeof(server_addr));
+	if (bind(server_sockfd, (struct sockaddr *) &server_addr, sizeof(server_addr)) < 0)
+		handle_error("bind");
 
 	listen(server_sockfd, MAX_LISTEN);
 
