@@ -56,7 +56,6 @@ void integer_to_ascii(int number, char **result) {
  * More info: man 2 date
  */
 void get_date(char *buffer, char *format) {
-
 	struct timeval tv;
 	time_t curtime;
 
@@ -128,7 +127,43 @@ int enc(unsigned char* output0, int len) {
 		output0[i] = (output0[i] - output0[i + 1] + 256) % 256;
 
 	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] ^ output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] + output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] + output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] ^ output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] + output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] + output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] + output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] ^ output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] ^ output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] + output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
 		output0[i] = (output0[i] - output0[i + 1] + 256) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] ^ output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] ^ output0[i + 1]) % 256;
 
 	for(int i = 0 ; i < len - 1 ; i++ )
 		output0[i] = (output0[i] + output0[i + 1]) % 256;
@@ -146,42 +181,6 @@ int enc(unsigned char* output0, int len) {
 		output0[i] = (output0[i] - output0[i + 1] + 256) % 256;
 
 	for(int i = 0 ; i < len - 1 ; i++ )
-		output0[i] = (output0[i] - output0[i + 1] + 256) % 256;
-
-	for(int i = 0 ; i < len - 1 ; i++ )
-		output0[i] = (output0[i] ^ output0[i + 1]) % 256;
-
-	for(int i = 0 ; i < len - 1 ; i++ )
-		output0[i] = (output0[i] - output0[i + 1] + 256) % 256;
-
-	for(int i = 0 ; i < len - 1 ; i++ )
-		output0[i] = (output0[i] ^ output0[i + 1]) % 256;
-
-	for(int i = 0 ; i < len - 1 ; i++ )
-		output0[i] = (output0[i] - output0[i + 1] + 256) % 256;
-
-	for(int i = 0 ; i < len - 1 ; i++ )
-		output0[i] = (output0[i] ^ output0[i + 1]) % 256;
-
-	for(int i = 0 ; i < len - 1 ; i++ )
-		output0[i] = (output0[i] ^ output0[i + 1]) % 256;
-
-	for(int i = 0 ; i < len - 1 ; i++ )
-		output0[i] = (output0[i] + output0[i + 1]) % 256;
-
-	for(int i = 0 ; i < len - 1 ; i++ )
-		output0[i] = (output0[i] + output0[i + 1]) % 256;
-
-	for(int i = 0 ; i < len - 1 ; i++ )
-		output0[i] = (output0[i] ^ output0[i + 1]) % 256;
-
-	for(int i = 0 ; i < len - 1 ; i++ )
-		output0[i] = (output0[i] + output0[i + 1]) % 256;
-
-	for(int i = 0 ; i < len - 1 ; i++ )
-		output0[i] = (output0[i] - output0[i + 1] + 256) % 256;
-
-	for(int i = 0 ; i < len - 1 ; i++ )
 		output0[i] = (output0[i] + output0[i + 1]) % 256;
 
 	for(int i = 0 ; i < len - 1 ; i++ )
@@ -194,25 +193,25 @@ int enc(unsigned char* output0, int len) {
 		output0[i] = (output0[i] - output0[i + 1] + 256) % 256;
 
 	for(int i = 0 ; i < len - 1 ; i++ )
-		output0[i] = (output0[i] ^ output0[i + 1]) % 256;
+		output0[i] = (output0[i] + output0[i + 1]) % 256;
 
 	for(int i = 0 ; i < len - 1 ; i++ )
 		output0[i] = (output0[i] + output0[i + 1]) % 256;
 
 	for(int i = 0 ; i < len - 1 ; i++ )
-		output0[i] = (output0[i] ^ output0[i + 1]) % 256;
+		output0[i] = (output0[i] - output0[i + 1] + 256) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] - output0[i + 1] + 256) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] + output0[i + 1]) % 256;
 
 	for(int i = 0 ; i < len - 1 ; i++ )
 		output0[i] = (output0[i] - output0[i + 1] + 256) % 256;
 
 	for(int i = 0 ; i < len - 1 ; i++ )
 		output0[i] = (output0[i] ^ output0[i + 1]) % 256;
-
-	for(int i = 0 ; i < len - 1 ; i++ )
-		output0[i] = (output0[i] ^ output0[i + 1]) % 256;
-
-	for(int i = 0 ; i < len - 1 ; i++ )
-		output0[i] = (output0[i] + output0[i + 1]) % 256;
 
 	return 0;
 }
