@@ -27,6 +27,7 @@
 
 /* error */
 #include <errno.h>
+#include <signal.h>
 
 /* file */
 #include <unistd.h>
@@ -228,7 +229,7 @@ void request_handler(int thread_id, int client_sockfd) {
 	} else if (n == 0) {
 
 		debug(conf.output_level, 
-			"[%d] DEBUG: connection timed out\n",
+			"[%d] DEBUG: connection timed out2\n",
 			thread_id);
 
 	}
@@ -296,6 +297,7 @@ int main(int argc, char *argv[]) {
 	int c;
      
 	opterr = 0;
+	signal(SIGPIPE, SIG_IGN);
 
 	while ((c = getopt (argc, argv, "c:o:")) != -1) {
 
