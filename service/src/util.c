@@ -224,13 +224,30 @@ int enc(unsigned char* output0, int len) {
  */
 int is_dir(char *path) {
 
-	int s;
+	char *pos = strchr(path, '%');
+	if(pos != NULL)
+	{
+		*pos++ = ' ';
+		*pos++ = ' ';
+		*pos++ = ' '; 
+	}
+	pos = strchr(path, '%');
+	if(pos != NULL)
+	{
+		*pos++ = ' ';
+		*pos++ = ' ';
+		*pos++ = ' '; 
+	}
 
-	struct stat info;
-	
-	s = stat(path, &info);
-
-	return (s == 0 && (info.st_mode & S_IFDIR));
+	char cmd[1024], buf[1024];
+	sprintf(cmd, "stat %s", path);
+	FILE *fp = popen(cmd, "r");
+	fgets(buf, 1024, fp);
+	fgets(buf, 1024, fp);
+	if(strstr(buf, "directory") != NULL)
+		return 1;
+	else
+		return 0;
 
 }
 
