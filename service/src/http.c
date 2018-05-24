@@ -191,31 +191,42 @@ void request_handler(int thread_id, int client_sockfd) {
 
 		while ((n = select(client_sockfd + 1, &select_set, NULL, NULL, &timeout)) > 0) {
 
-			if (FD_ISSET(client_sockfd, &select_set)) {
+			pid_t pid, wpid;
+			int status = 0;
+
+			pid = fork();
+			if (pid < 0)
+				handle_error("fork");
+			else if (pid == 0) {
+				if (FD_ISSET(client_sockfd, &select_set)) {
 
 				free_request(&request);
 				free_response(&response);
 
-				handle_request(thread_id, client_sockfd, &request);
-				handle_response(thread_id, client_sockfd, &request, &response);
-
+				if (handle_request(thread_id, client_sockfd, &request) < 0)
+					break;
+				if (handle_response(thread_id, client_sockfd, &request, &response) < 0)
+					break;
 				debug(conf.output_level, 
 					"[%d] DEBUG: connection is still open\n", 
 					thread_id);
 
 				req_count++;
 
+				}
+
+				if (req_count > conf.max_keep_alive_requests) {
+
+					debug(conf.output_level, 
+						"[%d] DEBUG: Max keep alive requests reached\n", 
+						thread_id);
+
+					break;
+
+				}
 			}
-
-			if (req_count > conf.max_keep_alive_requests) {
-
-				debug(conf.output_level, 
-					"[%d] DEBUG: Max keep alive requests reached\n", 
-					thread_id);
-
-				break;
-
-			}
+			else
+				wait(&status);
 		}
 
 	}

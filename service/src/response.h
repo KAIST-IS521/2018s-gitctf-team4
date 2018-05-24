@@ -24,9 +24,9 @@ typedef struct response {
 void set_response_status(response_t *resp, int status_code, char *reason_phrase);
 void write_response_header(response_t *resp, char *name, char *value);
 void append_response_header(response_t *resp, char *name, char *value);
-void send_response_headers(int thread_id, int sockfd, response_t *resp);
-void send_response_content(int thread_id, int sockfd, response_t *resp);
-void handle_response(int thread_id, int sockfd, request_t *req, response_t *resp);
+int send_response_headers(int thread_id, int sockfd, response_t *resp);
+int send_response_content(int thread_id, int sockfd, response_t *resp);
+int handle_response(int thread_id, int sockfd, request_t *req, response_t *resp);
 
 int handle_get(int thread_id, request_t *req, response_t *resp);
 int handle_post(int thread_id, request_t *req, response_t *resp);

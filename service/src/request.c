@@ -26,20 +26,21 @@ extern config_t conf;
  * @param sockfd: socket file descriptor to read data from
  * @param data: buffer where readed data will be stored
  */
-int receive_request(int thread_id, int sockfd, char **data) {
+int receive_request(int thread_id, int sockfd, char *data) {
 
 	uint8_t chunk[1];
-	uint8_t i;
+	// uint8_t i;
 	uint32_t received, n;
 
-	i = 0;
+	// i = 0;
 	received = 0;
 	n = 0;
 
 	/* Read byte by byte and look for the end of line */
 	while ((n = read(sockfd, chunk, 1)) > 0) {
 
-		if (received + n > REQUEST_MAX_SIZE) {
+		// if (received + n > REQUEST_MAX_SIZE) {
+		if (received + n > REQUEST_ALLOC_SIZE) {
 			/* max size per request has been reached! */
 			debug(conf.output_level,
 				"[%d] DEBUG: max request size reached (%d bytes)\n",
@@ -49,25 +50,25 @@ int receive_request(int thread_id, int sockfd, char **data) {
 
 		}
 
-		if (received + n > (i + 1) * REQUEST_ALLOC_SIZE) {
+		// if (received + n > (i + 1) * REQUEST_ALLOC_SIZE) {
 
-			i++;
+		// 	i++;
 
-			debug(conf.output_level, 
-				"[%d] DEBUG: reallocating...\n",
-				thread_id);
+		// 	debug(conf.output_level, 
+		// 		"[%d] DEBUG: reallocating...\n",
+		// 		thread_id);
 
-			if ((*data = realloc(*data, received + REQUEST_ALLOC_SIZE)) == NULL) {
-				handle_error("realloc");
-			}
+		// 	if ((*data = realloc(*data, received + REQUEST_ALLOC_SIZE)) == NULL) {
+		// 		handle_error("realloc");
+		// 	}
 
-		}
+		// }
 
-		memcpy(*data + received, chunk, n);
+		memcpy(&data[received], chunk, n);
 		received += n;
 
 		/* Read the end of line... backwards */
-		if (received >= 4 && strncmp(*data + received - 4, "\r\n\r\n", 4) == 0) {
+		if (received >= 4 && strncmp(&data[received-4], "\r\n\r\n", 4) == 0) {
 
 			debug(conf.output_level, 
 				"[%d] DEBUG: end of request found\n",
@@ -90,9 +91,10 @@ int receive_request(int thread_id, int sockfd, char **data) {
  * @param sockfd: socket file descriptor to read data from
  * @param data: buffer where readed data will be stored
  */
-int receive_message_body(int thread_id, int sockfd, char **data, size_t length) {
+int receive_message_body(int thread_id, int sockfd, char *data, size_t length) {
 
-	int i, n, received;
+	// int i;
+	int n, received;
 
 	uint8_t chunk[1];
 
@@ -100,7 +102,7 @@ int receive_message_body(int thread_id, int sockfd, char **data, size_t length) 
 
  	//struct timeval timeout;
 
-	i = 0;
+	// i = 0;
 	n = 0;
 	received = 0;
 
@@ -115,21 +117,21 @@ int receive_message_body(int thread_id, int sockfd, char **data, size_t length) 
 			return ERROR;
 		}
 
-		if (received + n > (i + 1) * REQUEST_ALLOC_MESSAGE_SIZE) {
+		// if (received + n > (i + 1) * REQUEST_ALLOC_MESSAGE_SIZE) {
 
-			i++;
+		// 	i++;
 
-			debug(conf.output_level, 
-				"[%d] DEBUG: reallocating...\n",
-				thread_id);
+		// 	debug(conf.output_level, 
+		// 		"[%d] DEBUG: reallocating...\n",
+		// 		thread_id);
 
-			if ((*data = realloc(*data, received + REQUEST_ALLOC_SIZE)) == NULL) {
-				handle_error("realloc");
-			}
+		// 	if ((*data = realloc(*data, received + REQUEST_ALLOC_SIZE)) == NULL) {
+		// 		handle_error("realloc");
+		// 	}
 
-		}
+		// }
 
-		memcpy(*data + received, chunk, n);
+		memcpy(&data[received], chunk, n);
 
 		received += n;
 
@@ -180,7 +182,7 @@ int get_request_header(request_t *req, char *name, char **value) {
  */
 int handle_request(int thread_id, int sockfd, request_t *req) {
 
-	char *buffer = NULL;
+	char buffer[REQUEST_ALLOC_SIZE];
 	char *method = NULL;
 	char *query = NULL;
 	char *content_length = NULL;
@@ -203,18 +205,18 @@ int handle_request(int thread_id, int sockfd, request_t *req) {
 	received = 0;
 
 	/* allocate first 1024 bytes for the request */
-	buffer = malloc(REQUEST_ALLOC_SIZE);
+	// buffer = malloc(REQUEST_ALLOC_SIZE);
 	memset(buffer, 0, REQUEST_ALLOC_SIZE);
 
-	if ((n = receive_request(thread_id, sockfd, &buffer)) < 0) {
+	if ((n = receive_request(thread_id, sockfd, buffer)) < 0) {
 		/* There has been an error receiving the client request :( */
-		free(buffer);
+		// free(buffer);
 
 		return ERROR;
 
 	} else if (n == 0) {
 
-		free(buffer);
+		// free(buffer);
 
 		debug(conf.output_level, "[%d] empty request\n", thread_id);
 
@@ -343,7 +345,7 @@ int handle_request(int thread_id, int sockfd, request_t *req) {
 	string_length = 0;
 
 	/* free buffer */
-	free(buffer);
+	// free(buffer);
 
 	if (get_request_header(req, "Content-Length", &content_length) != -1) {
 
@@ -353,11 +355,11 @@ int handle_request(int thread_id, int sockfd, request_t *req) {
 			return ERROR;
 		}
 
-		buffer = malloc(REQUEST_ALLOC_MESSAGE_SIZE);
+		// buffer = malloc(REQUEST_ALLOC_MESSAGE_SIZE);
 
-		if ((received = receive_message_body(thread_id, sockfd, &buffer, message_length)) < 0) {
+		if ((received = receive_message_body(thread_id, sockfd, buffer, message_length)) < 0) {
 			/* There has been an error receiving the message body :( */
-			free(buffer);
+			// free(buffer);
 			free_request(req);
 			return ERROR;
 
@@ -369,7 +371,7 @@ int handle_request(int thread_id, int sockfd, request_t *req) {
 		memcpy(req->message_body, buffer, received);
 		req->_mask |= _REQUEST_MESSAGE;
 
-		free(buffer);
+		// free(buffer);
 
 		debug(conf.output_level, 
 			"[%d] DEBUG: message body: %s\n",

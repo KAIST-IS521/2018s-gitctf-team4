@@ -128,7 +128,7 @@ void append_response_header(response_t *resp, char *name, char *value) {
 
 }
 
-void send_response_headers(int thread_id, int sockfd, response_t *resp) {
+int send_response_headers(int thread_id, int sockfd, response_t *resp) {
 
 	char *buffer;
 	char status_code[4];
@@ -178,6 +178,7 @@ void send_response_headers(int thread_id, int sockfd, response_t *resp) {
 			debug(conf.output_level, 
 				"[%d] DEBUG: unable to send response headers (%s)\n", 
 				thread_id, strerror(errno));
+			return ERROR;
 
 		} else {
 
@@ -199,6 +200,7 @@ void send_response_headers(int thread_id, int sockfd, response_t *resp) {
 			debug(conf.output_level, 
 				"[%d] DEBUG: unable to send response new line (%s)\n", 
 				thread_id, strerror(errno));
+			return ERROR;
 
 		} else {
 
@@ -209,16 +211,18 @@ void send_response_headers(int thread_id, int sockfd, response_t *resp) {
 	}
 
 	paranoid_free_string(buffer);
+	return 0;
 
 }
 
-void send_response_content(int thread_id, int sockfd, response_t *resp) {
+int send_response_content(int thread_id, int sockfd, response_t *resp) {
 
 	if (resp->_mask & _RESPONSE_FILE_PATH) {
 
-		send_file(thread_id, sockfd, resp->file_path);
+		return send_file(thread_id, sockfd, resp->file_path);
 
 	}
+	return 0;
 
 }
 
@@ -231,7 +235,7 @@ void send_response_content(int thread_id, int sockfd, response_t *resp) {
  * @param req: request_t data structure where the request is stored
  * @param resp: response_t data structure
  */
-void handle_response(int thread_id, int sockfd, request_t *req, response_t *resp) {
+int handle_response(int thread_id, int sockfd, request_t *req, response_t *resp) {
 
 	char *connection;
 	char date_buffer[MAX_DATE_SIZE];
@@ -267,12 +271,15 @@ void handle_response(int thread_id, int sockfd, request_t *req, response_t *resp
 
 				set_response_status(resp, 500, "Internal Server Error");
 				set_error_document(thread_id, resp, 500);
-				send_response_headers(thread_id, sockfd, resp);
+				if (send_response_headers(thread_id, sockfd, resp) < 0)
+					return ERROR;
 
 			} else {
 
-				send_response_headers(thread_id, sockfd, resp);
-				send_response_content(thread_id, sockfd, resp);
+				if (send_response_headers(thread_id, sockfd, resp) < 0)
+					return ERROR;
+				if (send_response_content(thread_id, sockfd, resp) < 0)
+					return ERROR;
 
 			}
 
@@ -286,7 +293,8 @@ void handle_response(int thread_id, int sockfd, request_t *req, response_t *resp
 
 			} else {
 
-				send_response_headers(thread_id, sockfd, resp);
+				if (send_response_headers(thread_id, sockfd, resp) < 0)
+					return ERROR;
 
 			}
 
@@ -298,12 +306,15 @@ void handle_response(int thread_id, int sockfd, request_t *req, response_t *resp
 
 				set_response_status(resp, 500, "Internal Server Error");
 				set_error_document(thread_id, resp, 500);
-				send_response_headers(thread_id, sockfd, resp);
+				if (send_response_headers(thread_id, sockfd, resp) < 0)
+					return ERROR;
 
 			} else {
 
-				send_response_headers(thread_id, sockfd, resp);
-				send_response_content(thread_id, sockfd, resp);
+				if (send_response_headers(thread_id, sockfd, resp) < 0)
+					return ERROR;
+				if (send_response_content(thread_id, sockfd, resp) < 0)
+					return ERROR;
 
 			}
 
@@ -328,7 +339,8 @@ void handle_response(int thread_id, int sockfd, request_t *req, response_t *resp
 		default:
 
 			set_response_status(resp, 405, "Method Not Allowed");
-			send_response_headers(thread_id, sockfd, resp);
+			if (send_response_headers(thread_id, sockfd, resp) < 0)
+					return ERROR;
 
 			break;
 
