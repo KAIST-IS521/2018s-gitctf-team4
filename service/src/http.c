@@ -378,6 +378,8 @@ int main(int argc, char *argv[]) {
 	client_sockfd = malloc(conf.thread_pool_size*sizeof(int));
 	
 	server_sockfd = socket(PF_INET, SOCK_STREAM, 0);
+	if (server_sockfd < 0)
+		handle_error("socket");
 
 	// Initialize addr structs
 	memset(&server_addr, 0, sizeof(server_addr));
