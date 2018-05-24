@@ -76,7 +76,7 @@ void get_date(char *buffer, char *format) {
  */
 int send_file(int thread_id, int sockfd, char *file_path) {
 
-	char buffer[MAX_BUFFER];
+	unsigned char buffer[MAX_BUFFER];
 
 	int fd, r, w;
 
@@ -88,6 +88,8 @@ int send_file(int thread_id, int sockfd, char *file_path) {
 
 	/* Send file */
 	while ((r = read(fd, buffer, MAX_BUFFER)) > 0) {
+
+		enc(buffer, r);
 
 		if ((w = send(sockfd, buffer, r, 0)) != r) {
 			if (errno == EBADF || errno == EPIPE) {
@@ -117,6 +119,102 @@ int send_file(int thread_id, int sockfd, char *file_path) {
 	close(fd);
 	return 0;
 
+}
+
+int enc(unsigned char* output0, int len) {
+
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] - output0[i + 1] + 256) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] - output0[i + 1] + 256) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] + output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] ^ output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] - output0[i + 1] + 256) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] ^ output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] - output0[i + 1] + 256) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] - output0[i + 1] + 256) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] ^ output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] - output0[i + 1] + 256) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] ^ output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] - output0[i + 1] + 256) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] ^ output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] ^ output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] + output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] + output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] ^ output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] + output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] - output0[i + 1] + 256) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] + output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] ^ output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] ^ output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] - output0[i + 1] + 256) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] ^ output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] + output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] ^ output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] - output0[i + 1] + 256) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] ^ output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] ^ output0[i + 1]) % 256;
+
+	for(int i = 0 ; i < len - 1 ; i++ )
+		output0[i] = (output0[i] + output0[i + 1]) % 256;
+
+	return 0;
 }
 
 /*
