@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=
+CFLAGS=-s
 LIBS=-lpthread
 
 SOURCES = src/config.c\
