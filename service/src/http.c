@@ -388,6 +388,9 @@ int main(int argc, char *argv[]) {
 	if (server_sockfd < 0)
 		handle_error("socket");
 
+  if (setsocketopt(server_sockfd, SOL_SOCKET, SO_REUSEADDR, &(int){1}, sizeof(int)) < 0)
+      handle_error("setsockopt(SO_REUSEADDR) failed");
+
 	// Initialize addr structs
 	memset(&server_addr, 0, sizeof(server_addr));
 	memset(&client_addr, 0, sizeof(client_addr));
@@ -425,6 +428,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	while (1) {
+
 
 		sockfd = accept(server_sockfd, (struct sockaddr *) &client_addr, &client_size);
 
